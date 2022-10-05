@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "ritm"
+version = "0.1.0"
+description = "Roast in the Middle"
+authors = ["Matt Creel"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+rich = "^12.5.1"
+typer = "^0.6.1"
+impacket = "^0.10.0"
+scapy = "^2.5.0rc1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+ritm = "ritm.__main__:app"
+roastinthemiddle = "ritm.__main__:app"
