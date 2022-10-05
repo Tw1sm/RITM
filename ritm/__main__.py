@@ -16,10 +16,10 @@ app = typer.Typer(
 def main(
     interface: str = typer.Option('eth0', '--interface', '-i', metavar='INTERFACE', help='Interface to listen on', rich_help_panel='Spoofing Options'),
     targets: List[str] = typer.Option(..., '--target', '-t', metavar='IP_ADDR', help='Target to ARP spoof (flag can be used multiple times)', rich_help_panel='Spoofing Options'),
-    gateway: str = typer.Option(..., '--gateway', '-g', help='Gateway to spoof', rich_help_panel='Spoofing Options'),
+    gateway: str = typer.Option(..., '--gateway', '-g', metavar='IP_ADDR', help='Gateway to spoof', rich_help_panel='Spoofing Options'),
     users_file: typer.FileText = typer.Option(..., '--users-file', '-u', help='File containing usernames (or SPNs) to attempt to roast', rich_help_panel='Roasting Options'),
-    output_file: str = typer.Option(None, '--output-file', '-o', help='Output file for roasted hashes', rich_help_panel='Roasting Options'),
-    dc_ip: str = typer.Option(None, '--dc-ip', '-d', help='Domain controller to roast', rich_help_panel='Roasting Options'),
+    output_file: str = typer.Option(None, '--output-file', '-o', metavar='FILENAME', help='Output file for roasted hashes', rich_help_panel='Roasting Options'),
+    dc_ip: str = typer.Option(None, '--dc-ip', '-d', metavar='IP_ADDR', help='Domain controller to roast', rich_help_panel='Roasting Options'),
     debug: bool = typer.Option(False, '--debug', help='Enable [green]DEBUG[/] output')):
 
     banner()

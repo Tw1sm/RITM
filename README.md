@@ -2,7 +2,7 @@
 This is a Python implementation of the man-in-the-middle attack described by Charlie Clark ([@exploitph](https://twitter.com/exploitph)) in his post, [New Attack Paths? AS Requested Service Tickets](https://www.semperis.com/blog/new-attack-paths-as-requested-sts/), and demonstrated in his proof-of-concept, [Roast in the Middle](https://github.com/0xe7/RoastInTheMiddle).
 
 In short, this tool:
-1. Performs ARP spoofing between your targets and the gateway (or targets and the DCs, if all on the same subnet) to man-in-the-middle traffic
+1. Performs ARP spoofing between your target(s) and the gateway to obtain a man-in-the-middle position
 2. Sniffs traffic for an AS-REQ containing `PA-ENC-TIMESTAMP` data (yes, this will miss a valid AS-REQ where pre-auth is not required)
 3. Replays the sniffed AS-REQ to a DC after changing the SPN to usernames/SPNs provided via a file
 4. Outputs any roasted account hashes

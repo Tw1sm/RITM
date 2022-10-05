@@ -39,7 +39,6 @@ class Sniffer:
         try:
             self.__sniff_thread = Thread(target=self._sniff, daemon=True)
             self.__sniff_thread.start()
-            #sniff(iface=self.__interface, prn=self, store=0)
         except OSError as e:
             if 'No such device' in str(e):
                 logger.error(f'{self.__interface} is not a valid interface')
