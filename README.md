@@ -9,6 +9,10 @@ In short, this tool:
 
 For a greater level of technical detail I recommend reading Charlie's blog.
 
+Attempting to man-in-the-middle too many targets may cause latency issues for the victim machines. RITM has only been testing on <5 targets at a time.
+
+RITM will restore the ARP caches of target machines upon complention or `Ctrl-C`. If un uncaught error is thrown and RITM errors out, you can restart RITM and quickly `Ctrl-C` to restore ARP caches.
+
 ## Install
 RITM can be installed by cloning this repository and running `pip3 install .` and subsequently executed from PATH with either `ritm` or `roastinthemiddle`
 
@@ -18,7 +22,8 @@ RITM can be installed by cloning this repository and running `pip3 install .` an
 ## Example
 ![](.github/example.png)
 
-I highly recommend specifying a domain controller to roast with `--dc-ip`
+- I highly recommend specifying a domain controller to roast with `--dc-ip`
+- If target(s) and DC are on same subnet, set the DC's IP with `--gateway`/`-g`
 
 ## Development
 RITM uses Poetry to manage dependencies. Install from source and setup for development with:
