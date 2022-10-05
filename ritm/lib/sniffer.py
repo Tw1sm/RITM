@@ -20,7 +20,7 @@ class Sniffer:
             if packet[TCP].dport == 88: 
                 if KRB_AS_REQ in packet:
                     if packet[Kerberos].root.padata[0].padataType == PA_ENC_TIMESTAMP:
-                        logger.debug('Found AS-REP with padata-type PA-ENC-TIMESTAMP')
+                        logger.debug(f'Sniffed AS-REP from {packet[IP].src} with padata-type PA-ENC-TIMESTAMP')
                         self.as_req_packet = packet
                         return
 
