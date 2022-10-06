@@ -20,7 +20,7 @@ class Roaster:
         self.__output_file_handle = None
         self.__cname = None
         self.__realm = None
-        self.roasted = 0
+        self.roasted = -1
 
 
     # replay the sniffed AS-REQ with alternate sname fields,
@@ -55,7 +55,7 @@ class Roaster:
             if self.__output_file:
                 self.__output_file_handle.close()
 
-            logger.info(f'Roaster complete! Performed {self.roasted} roast attempts')
+            logger.info(f'Roaster complete! Roasted {self.roasted} accounts')
         else:
             self.as_req_is_valid = False
 

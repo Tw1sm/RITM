@@ -42,19 +42,18 @@ def main(
             roaster = Roaster(users, sniffer.as_req_packet, output_file, dc_ip)
             roaster.roast()
 
-            if roaster.as_req_is_valid and roaster.roasted > 1:
+            if roaster.as_req_is_valid and roaster.roasted > 0:
                 break
             
             if not roaster.as_req_is_valid:
-                logger.info('Captured AS_REQ is not valid, restarting the sniffer...')
-            elif roaster.roasted <= 1:
+                logger.info('Captured AS_REQ is not valid, continuing to sniff...')
+            elif roaster.roasted == 0:
                 logger.info('No account was successfully roasted (wrong entries in the users file?)')
                 break
 
             sniffer.as_req_packet = None
-            sniffer.stop()
 
-        logger.info('Preparing to shutdown, may take several seconds..')
+        logger.info('Preparing to shutdown, may take several seconds...')
 
     except KeyboardInterrupt:
         logger.info('Preparing to shutdown, may take several seconds...')
