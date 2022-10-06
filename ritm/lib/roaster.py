@@ -20,7 +20,7 @@ class Roaster:
         self.__output_file_handle = None
         self.__cname = None
         self.__realm = None
-        self.__roasted = 0
+        self.roasted = 0
 
 
     # replay the sniffed AS-REQ with alternate sname fields,
@@ -51,7 +51,7 @@ class Roaster:
         if self.__output_file:
             self.__output_file_handle.close()
         
-        logger.info(f'Roaster complete! Roasted {self.__roasted} accounts')
+        logger.info(f'Roaster complete! Roasted {self.roasted} accounts')
 
     
     # slightly modified from 
@@ -126,6 +126,9 @@ class Roaster:
             elif e.getErrorCode() == constants.ErrorCodes.KDC_ERR_S_PRINCIPAL_UNKNOWN.value:
                 logger.debug(f'Received [red bold]ERR_S_PRINCIPAL_UKNOWN[/] for SPN [blue bold]{username}[/]', extra=OBJ_EXTRA_FMT)
                 return
+            elif e.getErrorCode() == constants.ErrorCodes.KDC_ERR_PREAUTH_FAILED.value:
+                logger.debug(f'Received [red bold]KDC_ERR_PREAUTH_FAILED[/] for SPN [blue bold]{username}[/] (probably invalid password was entered)', extra=OBJ_EXTRA_FMT)
+                return
             else:
                 raise e
         except OSError as e:
@@ -136,7 +139,7 @@ class Roaster:
             exit(1)
         
         logger.info(f'Roasted SPN [blue bold]{username}[/] :fire:', extra=OBJ_EXTRA_FMT)
-        self.__roasted += 1
+        self.roasted += 1
         self._outputTGS(r, username, username)
 
 

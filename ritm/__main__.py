@@ -25,7 +25,7 @@ def main(
     banner()
 
     init_logger(debug)
-    users = users_file.read().split('\n')
+    users = users_file.read().splitlines()
 
     Spoofer._enable_ip_forwarding()
 
@@ -36,11 +36,17 @@ def main(
         sniffer = Sniffer(interface)
         sniffer.run()
         
-        while sniffer.as_req_packet == None:
-            pass
+        while True:
+            while sniffer.as_req_packet == None:
+                pass
 
-        roaster = Roaster(users, sniffer.as_req_packet, output_file, dc_ip)
-        roaster.roast()
+            roaster = Roaster(users, sniffer.as_req_packet, output_file, dc_ip)
+            roaster.roast()
+
+            if roaster.roasted > 0:
+                break
+
+            sniffer.as_req_packet = None
 
         logger.info('Preparing to shutdown, may take several seconds..')
         
