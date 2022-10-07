@@ -35,6 +35,10 @@ poetry install
 poetry run ritm --help
 ```
 
+## Contributors
+Thank you to the following people for contributions to the code base!
+- [@snovvcrash](https://twitter.com/snovvcrash)
+
 ## Credits
 - Charlie Clark ([@exploitph](https://twitter.com/exploitph)) - This tool is completely based off his research and proof-of-concept code
 - [Impacket](https://github.com/SecureAuthCorp/impacket) - for Kerberos structures and code to send/parse AS-REQs, AS-REPs
