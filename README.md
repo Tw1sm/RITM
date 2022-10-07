@@ -9,9 +9,9 @@ In short, this tool:
 
 For a greater level of technical detail I recommend reading Charlie's blog.
 
-Attempting to man-in-the-middle too many targets may cause latency issues for the victim machines. RITM has only been tested on <5 targets at a time.
+Attempting to man-in-the-middle too many targets may cause latency issues for the victim's machines. RITM has only been tested on <5 targets at a time.
 
-RITM will restore the ARP caches of target machines upon complention or `Ctrl-C`. If un uncaught error is thrown and RITM errors out, you can restart RITM and quickly `Ctrl-C` to restore ARP caches.
+RITM will restore the ARP caches of target machines upon completion or `Ctrl-C`. If an uncaught error is thrown and RITM errors out, you can restart RITM and quickly `Ctrl-C` to restore ARP caches.
 
 ## Install
 RITM can be installed by cloning this repository and running `pip3 install .` and subsequently executed from PATH with either `ritm` or `roastinthemiddle`
