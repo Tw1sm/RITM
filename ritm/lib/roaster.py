@@ -47,7 +47,7 @@ class Roaster:
         if self._construct_AS_REQ('krbtgt', output=False):
             self.as_req_is_valid = True
 
-            logger.info(f'The AS_REQ is valid! Attempting to roast {len(self.__users)} users')
+            logger.info(f'The AS-REQ is valid! Attempting to roast {len(self.__users)} users')
             for user in self.__users:
                 if user != '':
                     _ = self._construct_AS_REQ(user)
@@ -144,10 +144,10 @@ class Roaster:
                 logger.error(str(e))
             exit(1)
         
-        logger.info(f'Roasted SPN [blue bold]{username}[/] :fire:', extra=OBJ_EXTRA_FMT)
         self.roasted += 1
 
         if output:
+            logger.info(f'Roasted SPN [blue bold]{username}[/] :fire:', extra=OBJ_EXTRA_FMT)
             self._outputTGS(r, username, username)
 
         return True
