@@ -1,6 +1,7 @@
 from scapy.all import *
 from ritm.logger import logger
 from threading import Thread, currentThread
+import netifaces
 
 PA_ENC_TIMESTAMP = 0x2
 
@@ -11,6 +12,7 @@ class Sniffer:
         self.__interface = interface
         self.__sniff_thread = None
         self.as_req_packet = None
+        self.__ip_addr = netifaces.ifaddresses(self.__interface)[netifaces.AF_INET][0]['addr']
 
 
     # called as each packet is sniffed
@@ -19,7 +21,11 @@ class Sniffer:
         if TCP in packet:
             if packet[TCP].dport == 88: 
                 if KRB_AS_REQ in packet:
-                    if packet[Kerberos].root.padata[0].padataType == PA_ENC_TIMESTAMP:
+                    if packet[Kerberos].root.padata[0].padataType == PA_ENC_TIMESTAMP: 
+                        # ignore traffic originating from our host
+                        if packet[IP].src == self.__ip_addr:
+                            return
+                        
                         logger.debug(f'Sniffed AS-REQ from {packet[IP].src} with padata-type PA-ENC-TIMESTAMP')
                         self.as_req_packet = packet
                         return
