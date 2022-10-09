@@ -104,9 +104,13 @@ class Spoofer:
 
     @staticmethod
     def _enable_ip_forwarding():
-        with open(IP_FORWARDING_FILE, 'w') as f:
-            f.write('1')
-        logger.debug('IP forwarding enabled')
+        try:
+            with open(IP_FORWARDING_FILE, 'w') as f:
+                f.write('1')
+            logger.debug('IP forwarding enabled')
+        except PermissionError:
+            logger.error(f'I need roooot. Unable to open {IP_FORWARDING_FILE}')
+            exit()
 
 
     @staticmethod
