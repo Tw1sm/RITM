@@ -59,10 +59,14 @@ def main(
         logger.info('Preparing to shutdown, may take several seconds...')
 
     finally:
-        sniffer.stop()
-        spoofer.stop()
-
-        logger.info('Done!')
+        try:
+            sniffer.stop()
+            spoofer.stop()
+            logger.info('Done!')
+        except:
+            # we're here because sniffer/spoofer triggered a error on creation
+            #   that error should be handled elsehwere
+            pass
         
 
 def banner():
