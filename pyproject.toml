@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "ritm"
-version = "0.1.1"
+version = "0.1.2"
 description = "Roast in the Middle"
 authors = ["Matt Creel"]
 readme = "README.md"
