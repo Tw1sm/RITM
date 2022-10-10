@@ -25,7 +25,7 @@ def main(
     banner()
 
     init_logger(debug)
-    users = users_file.read().splitlines()
+    users = users_file.read().split('\n')
 
     Spoofer._enable_ip_forwarding()
 
