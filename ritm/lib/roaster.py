@@ -43,7 +43,7 @@ class Roaster:
 
         logger.info('Starting roaster...')
 
-        logger.info('Checking if the captured AS-REQ is valid with a request for krbtgt')
+        logger.info('Checking if the captured AS-REQ is valid with a request for [green bold]krbtgt[/]', extra=OBJ_EXTRA_FMT)
         if self._construct_AS_REQ('krbtgt', output=False):
             self.as_req_is_valid = True
 
