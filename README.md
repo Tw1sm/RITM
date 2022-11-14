@@ -7,9 +7,9 @@ In short, this tool:
 3. Replays the sniffed AS-REQ to a DC after changing the SPN to usernames/SPNs provided via a file
 4. Outputs any roasted account hashes
 
-For a greater level of technical detail I recommend reading Charlie's blog.
+[Post about RITM](https://tw1sm.substack.com/p/roast-in-the-middle). For a greater level of technical detail I recommend reading Charlie's blog.
 
-Attempting to man-in-the-middle too many targets may cause latency issues for the victim's machines. RITM has only been tested on <5 targets at a time.
+_WARNING: Attempting to man-in-the-middle too many targets may cause latency issues for the victim's machines. RITM has only been tested on <5 targets at a time. Specifying network equipment as targets with `-t/--targets` and subsequently ARP spoofing against them will likely have a negative effect on the network._
 
 RITM will restore the ARP caches of target machines upon completion or `Ctrl-C`. If an uncaught error is thrown and RITM errors out, you can restart RITM and quickly `Ctrl-C` to restore ARP caches.
 
