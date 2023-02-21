@@ -20,9 +20,11 @@ def main(
     users_file: typer.FileText = typer.Option(..., '--users-file', '-u', help='File containing usernames (or SPNs) to attempt to roast', rich_help_panel='Roasting Options'),
     output_file: str = typer.Option(None, '--output-file', '-o', metavar='FILENAME', help='Output file for roasted hashes', rich_help_panel='Roasting Options'),
     dc_ip: str = typer.Option(None, '--dc-ip', '-d', metavar='IP_ADDR', help='Domain controller to roast', rich_help_panel='Roasting Options'),
+    quiet: bool = typer.Option(False, '--quiet', help='Hide the banner'),
     debug: bool = typer.Option(False, '--debug', help='Enable [green]DEBUG[/] output')):
 
-    banner()
+    if not quiet:
+        banner()
 
     init_logger(debug)
     users = users_file.read().split('\n')
