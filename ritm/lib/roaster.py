@@ -128,7 +128,7 @@ class Roaster:
                                     int(constants.EncryptionTypes.aes128_cts_hmac_sha1_96.value),)
                 seq_set_iter(reqBody, 'etype', supportedCiphers)
                 message = encoder.encode(asReq)
-                r = sendReceive(message, self.__realm, self.__kdcIP)
+                r = sendReceive(message, self.__realm, self.__dc_ip)
             elif e.getErrorCode() == constants.ErrorCodes.KDC_ERR_S_PRINCIPAL_UNKNOWN.value:
                 logger.debug(f'Received [red bold]ERR_S_PRINCIPAL_UKNOWN[/] for SPN [blue bold]{username}[/]', extra=OBJ_EXTRA_FMT)
                 return False
