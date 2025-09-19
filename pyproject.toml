@@ -12,6 +12,7 @@ typer = "^0.6.1"
 impacket = "^0.10.0"
 scapy = "^2.5.0rc1"
 netifaces = "^0.11.0"
+click = "8.1.8"
 
 [build-system]
 requires = ["poetry-core"]
