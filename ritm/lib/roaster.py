@@ -106,7 +106,7 @@ class Roaster:
 
         reqBody['realm'] = self.__realm
 
-        now = datetime.datetime.utcnow() + datetime.timedelta(days=1)
+        now = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None) + datetime.timedelta(days=1)
         reqBody['till'] = KerberosTime.to_asn1(now)
         reqBody['rtime'] = KerberosTime.to_asn1(now)
         reqBody['nonce'] = random.getrandbits(31)
